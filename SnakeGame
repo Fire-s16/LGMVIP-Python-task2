@@ -1,0 +1,113 @@
+import turtle
+import time
+import random
+
+delay = 0.1
+wn = turtle.Screen()
+wn.title("Snake Game")
+wn.bgcolor("white")
+wn.setup(width=700, height=700)
+wn.tracer(0)  
+# Snake head
+head = turtle.Turtle()
+head.speed(0)
+head.shape("square")
+head.color("green")
+head.penup()
+head.goto(0, 0)
+head.direction = "Right"
+# Snake food
+food = turtle.Turtle()
+food.speed(0)
+food.shape("circle")
+food.color("red")
+food.penup()
+food.goto(0, 100)
+segments = []
+def go_up():
+    if head.direction != "Down":
+        head.direction = "Up"
+def go_down():
+    if head.direction != "Up":
+        head.direction = "Down"
+def go_left():
+    if head.direction != "Right":
+        head.direction = "Left"
+def go_right():
+    if head.direction != "Left":
+        head.direction = "Right"
+def move():
+    if head.direction == "Up":
+        y = head.ycor()
+        head.sety(y + 20)
+    if head.direction == "Down":
+        y = head.ycor()
+        head.sety(y - 20)
+    if head.direction == "Left":
+        x = head.xcor()
+        head.setx(x - 20)
+    if head.direction == "Right":
+        x = head.xcor()
+        head.setx(x + 20)
+wn.listen()
+wn.onkeypress(go_up, "t")
+wn.onkeypress(go_down, "g")
+wn.onkeypress(go_left, "f")
+wn.onkeypress(go_right, "h")
+while True:
+    wn.update()
+    if (
+        head.xcor() > 340
+        or head.xcor() < -340
+        or head.ycor() > 340
+        or head.ycor() < -340
+    ):
+        time.sleep(1)
+        head.goto(0, 0)
+        head.direction = "Right"
+        for segment in segments:
+            segment.goto(1000, 1000)
+        segments.clear()
+    if head.distance(food) < 20:
+       
+        x = random.randint(-340, 340)
+        y = random.randint(-340, 340)
+        food.goto(x, y)
+
+        
+        new_segment = turtle.Turtle()
+        new_segment.speed(0)
+        new_segment.shape("square")
+        new_segment.color("green")
+        new_segment.penup()
+        segments.append(new_segment)
+
+    
+    for index in range(len(segments) - 1, 0, -1):
+        x = segments[index - 1].xcor()
+        y = segments[index - 1].ycor()
+        segments[index].goto(x, y)
+
+   
+    if len(segments) > 0:
+        x = head.xcor()
+        y = head.ycor()
+        segments[0].goto(x, y)
+
+    move()
+
+    
+    for segment in segments:
+        if head.distance(segment) < 20:
+            time.sleep(1)
+            head.goto(0, 0)
+            head.direction = "Right"
+
+           
+            for segment in segments:
+                segment.goto(1000, 1000)
+
+          
+            segments.clear()
+
+    time.sleep(delay)
